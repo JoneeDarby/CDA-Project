@@ -1,5 +1,5 @@
 #include "spimcore.h"
-
+#include "spimcore.c"
 
 /* ALU */
 /* 10 Points */
