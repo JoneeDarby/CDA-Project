@@ -12,7 +12,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
-    if (PC % 4 != 0) {
+    if (PC % 4 != 0 || PC / 4 >= MEMSIZE) {
         return 1; // PC is not word-aligned
     }
 
