@@ -1,5 +1,5 @@
 #include "spimcore.h"
-
+#include "spimcore.c"
 
 /* ALU */
 /* 10 Points */
@@ -26,7 +26,26 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 /* 10 Points */
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
+    /*1. Partition instruction into several parts (op, r1, r2, r3, funct, offset, jsec).
+    2. Read line 41 to 47 of spimcore.c for more information.*/
 
+    /*op: need to right shift instruction by 26 to get the correct bits to the
+    LSB and then AND it by 6 bits so there's no trailing 1's to get the
+    correct op*/
+    *op = (instruction >> 26) & 0x3F; //right shift by 26
+
+    /*r1,r2,r3: the register values are all going to be AND'ed by 5 bits to get
+    rid of trailing 1's. Their shift values all vary bc of their bit locations
+    differ from one another*/
+    *r1 = (instruction >> 21) & 0x1F; //right shift by 21
+    *r2 = (instruction >> 16) & 0x1F; //right shift by 16
+    *r3 = (instruction >> 11) & 0x1F; //right shify by 11
+
+    /*funct,offset,jsec: since they all go to the 0(LSB) there is not shifting
+    needed so the only thing that varies are the AND values*/
+    *funct = instruction & 0x3F; //6 bit
+    *offset = instruction & 0xFFFF; //16 bit
+    *jsec = instruction & 0x3FFFFFF; //26 bit
 }
 
 
