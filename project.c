@@ -205,7 +205,7 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     and keep the negative number. If it's 0 then I can keep the upper 16 bits as
     0's to keep the positive number*/
 
-    if (offset & 0x8000) {
+    if ((offset & 0x8000) != 0) {
         *extended_value = offset | 0xFFFF0000; //If its 1 make all the 16 upper bits 1 (negative)
     } else {
         *extended_value = offset; //If its 0 make all the 16 upper bits 0 (positive)
