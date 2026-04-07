@@ -198,6 +198,18 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 /* 10 Points */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
+    //1. Assign the sign-extended value of offset to extended_value.
+
+    /*offset is a 16 bit right now so I need to check if the 16th bit is 0 or 1.
+    If its 1 then I need to make the upper 16 bits 1's as well to make it 32 bits
+    and keep the negative number. If it's 0 then I can keep the upper 16 bits as
+    0's to keep the positive number*/
+
+    if (offset & 0x8000) {
+        *extended_value = offset | 0xFFFF0000; //If its 1 make all the 16 upper bits 1 (negative)
+    } else {
+        *extended_value = offset; //If its 0 make all the 16 upper bits 0 (positive)
+    }
 
 }
 
