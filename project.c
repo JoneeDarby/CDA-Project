@@ -54,7 +54,121 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 /* 15 Points */
 int instruction_decode(unsigned op,struct_controls *controls)
 {
+    /*Decode the operation code and set the control signals accordingly*/
+    
+    switch(op) {
+        case 0x00: // R-Type
+            controls->RegDst = 1;   // Does the instruction write to the rd register?
+            controls->Jump = 0;     // Is the instruction a jump instruction?
+            controls->Branch = 0;   // Is the instruction a branch instruction?
+            controls->MemRead = 0;  // Does the instruction read from memory?
+            controls->MemtoReg = 0; // Does the instruction write the memory data to the register?
+            controls->ALUOp = 7;    // ALU operation code
+            controls->MemWrite = 0; // Does the instruction write to memory?
+            controls->ALUSrc = 0;   // Does the instruction use an immediate value as the second ALU operand?
+            controls->RegWrite = 1; // Does the instruction write to a register?
+            break;
+        
+        case 0x02: // J-Type (j)
+            controls->RegDst = 2;
+            controls->Jump = 1;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 2;
+            controls->ALUOp = 0;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 0;
+            controls->RegWrite = 0;
+            break;
+        
+        case 0x04: // I-Type (beq)
+            controls->RegDst = 2;
+            controls->Jump = 0;
+            controls->Branch = 1;
+            controls->MemRead = 0;
+            controls->MemtoReg = 2;
+            controls->ALUOp = 1;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 0;
+            controls->RegWrite = 0;
+            break;
+        
+        case 0x08: // I-Type (addi)
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 0;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            break;
+        
+        case 0x0a: // I-Type (slti)
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 2;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            break;
 
+        case 0x0b: // I-Type (sltiu)
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 3;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            break;
+
+        case 0x0f: // I-Type (lui)
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 0;
+            controls->ALUOp = 6;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            break;
+
+        case 0x23: // I-Type (lw)
+            controls->RegDst = 0;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 1;
+            controls->MemtoReg = 1;
+            controls->ALUOp = 0;
+            controls->MemWrite = 0;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 1;
+            break;
+
+        case 0x2b: // I-Type (sw)
+            controls->RegDst = 2;
+            controls->Jump = 0;
+            controls->Branch = 0;
+            controls->MemRead = 0;
+            controls->MemtoReg = 2;
+            controls->ALUOp = 0;
+            controls->MemWrite = 1;
+            controls->ALUSrc = 1;
+            controls->RegWrite = 0;
+            break;
+        
+        default: // Unsupported instruction
+            return 1;
+    }
+    return 0; // Works
 }
 
 /* Read Register */
