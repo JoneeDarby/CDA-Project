@@ -217,7 +217,46 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 /* 10 Points */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
+    unsigned B;
+    /*1. Determine the second ALU operand based on ALUSrc from instruction_decode. If ALUSrc is 0, the second ALU operand is data2. If ALUSrc is 1, the second ALU operand is extended_value.*/
+    if (ALUSrc == 0) {
+        B = data2;
+    } else {
+        B = extended_value;
+    }
 
+    /*2. If ALUOp is not 7, go straight to ALU func*/
+    if (ALUOp != 7) {
+        ALU(data1, B, ALUOp, ALUresult, Zero);
+        return 0;
+    }
+    
+    /*3. If ALUOp is 7, determine the ALU operation based on funct.*/
+    if (ALUOp == 7) {
+        switch (funct) {
+            case 0x20: // add
+                ALU(data1, B, 0, ALUresult, Zero);
+                break;
+            case 0x22: // sub
+                ALU(data1, B, 1, ALUresult, Zero);
+                break;
+            case 0x24: // and
+                ALU(data1, B, 4, ALUresult, Zero);
+                break;
+            case 0x25: // or
+                ALU(data1, B, 5, ALUresult, Zero);
+                break;
+            case 0x2a: // slt
+                ALU(data1, B, 2, ALUresult, Zero);
+                break;
+            case 0x2b: // sltu
+                ALU(data1, B, 3, ALUresult, Zero);
+                break;
+            default:
+                return 1; // Unsupported operation
+        }
+    }
+    return 0; // Works
 }
 
 /* Read / Write Memory */
