@@ -301,7 +301,28 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 /* 10 Points */
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
+   unsigned dest;
+   unsigned value;
 
+    /* If we are not supposed to write, just return */
+    if (RegWrite != 1)
+        return;
+
+    /* Choose destination register: r2 or r3 */
+    if (RegDst == 1)
+        dest = r3;      /* R-type: rd */
+    else
+        dest = r2;      /* I-type/lw: rt */
+
+    /* Choose value to write: from memory or ALU */
+    if (MemtoReg == 1)
+        value = memdata;    /* lw */
+    else
+        value = ALUresult;  /* R-type, addi, etc. */
+
+    /* In MIPS, register 0 is always 0; do not overwrite it */
+    if (dest != 0)
+        Reg[dest] = value;
 }
 
 /* PC update */
