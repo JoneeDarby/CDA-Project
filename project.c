@@ -263,7 +263,37 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 /* 10 Points */
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
+    /*1. Use the value of MemWrite or MemRead to determine if a memory write
+    operation or memory read operation or neither is occurring.
+    2. If reading from memory, read the content of the memory location addressed by
+    ALUresult to memdata.
+    3. If writing to memory, write the value of data2 to the memory location
+    addressed by ALUresult.
+    4. Return 1 if a halt condition occurs; otherwise, return 0.
 
+    Mem is the memory array
+    If MemWrite = 1, check word alignment and write into memory
+    If MemRead = 1, check word alignment and read from memory*/
+
+    /*I need to check if we are reading or writing to memory. IF we are
+    then I need to see if the address(AlUresult is aligned). If not give
+    a halt (return 1)*/
+    if (MemRead == 1 || MemWrite == 1) { //we are accessing memory
+        if (ALUresult % 4 != 0) { //check if the address (ALUresult) is not aligned
+            return 1; //give a halt
+        }
+    }
+
+    /*For MemWrite: If it is equal to 1 then I need to get the correct location
+    of ALUresult and make this data equal to data2*/
+    /*For MemRead: If it is equal to 1 then I need to get the data that is 
+    addressed by AlUresult into memdata*/
+    if (MemWrite == 1) {
+        Mem[ALUresult >> 2] = data2;
+    } else if (MemRead == 1) {
+        *memdata = Mem[ALUresult >> 2];
+    } 
+    return 0;
 }
 
 
