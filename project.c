@@ -370,5 +370,7 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
     if (Branch && Zero) {
         nextPC = nextPC + (extended_value << 2); // Branch target address is calculated by adding the sign-extended offset (shifted left by 2 to convert from word to byte address) to the nextPC
     }   
+
+    *PC = nextPC; // Update the PC to the calculated nextPC
 }
 
