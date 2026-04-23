@@ -12,13 +12,13 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
             *ALUresult = A - B;
             break;
         case 2: // slt
-            *ALUresult = (A < B) ? 1 : 0;
+            *ALUresult = ((int)A < (int)B) ? 1 : 0;
             break;
         case 3: // sltu
             *ALUresult = ((unsigned)A < (unsigned)B) ? 1 : 0;
             break;
         case 4: // and
-            *ALUresult = A && B;
+            *ALUresult = A & B;
             break;
         case 5: // or
             *ALUresult = A | B;
