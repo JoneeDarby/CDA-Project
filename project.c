@@ -4,7 +4,38 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
+    switch (ALUControl) {
+        case 0: // add
+            *ALUresult = A + B;
+            break;
+        case 1: // subtract
+            *ALUresult = A - B;
+            break;
+        case 2: // slt
+            *ALUresult = (A < B) ? 1 : 0;
+            break;
+        case 3: // sltu
+            *ALUresult = ((unsigned)A < (unsigned)B) ? 1 : 0;
+            break;
+        case 4: // and
+            *ALUresult = A && B;
+            break;
+        case 5: // or
+            *ALUresult = A | B;
+            break;
+        case 6: // lui
+            *ALUresult = B << 16; // Shift B left by 16 bits to load it into the upper half of the register
+            break;
+        case 7: // not
+            *ALUresult = ~A;
+            break;
+        default: // Unsupported ALU control code
+            *ALUresult = 0;
+            break;
+    }
 
+    /* Set Zero flag */
+    *Zero = (*ALUresult == 0) ? 1 : 0; // Set Zero flag if ALU result is zero, otherwise clear it
 }
 
 /* instruction fetch */
@@ -328,6 +359,16 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 /* 10 Points */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
+    unsigned nextPC = *PC + 4; // Default case : next PC is the next instruction
 
+    /* If it's a jump instruction, we need to calculate the jump target address */
+    if (Jump) {
+        nextPC = (nextPC & 0xF0000000) | (jsec << 2); // Combine upper 4 bits of nextPC with jsec shifted left by 2 to convert from word to byte address
+    }
+
+    /* If it's a branch instruction and the Zero flag is set, we need to calculate the branch target address */
+    if (Branch && Zero) {
+        nextPC = nextPC + (extended_value << 2); // Branch target address is calculated by adding the sign-extended offset (shifted left by 2 to convert from word to byte address) to the nextPC
+    }   
 }
 
