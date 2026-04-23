@@ -29,6 +29,10 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
         case 7: // not
             *ALUresult = ~A;
             break;
+        default: // Unsupported ALU control code
+            *ALUresult = 0;
+            break;
+    }
 
     /* Set Zero flag */
     *Zero = (*ALUresult == 0) ? 1 : 0; // Set Zero flag if ALU result is zero, otherwise clear it
